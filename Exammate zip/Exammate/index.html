@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111713">
+    <title>ExamMate | Your study dashboard</title>
+
+    <link rel="stylesheet"
+          href="https://pyscript.net/releases/2025.3.1/core.css">
+    <script type="module"
+            src="https://pyscript.net/releases/2025.3.1/core.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script type="py" src="main.py"></script>
+    <script src="dashboard.js" defer></script>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="brand" href="#overview" aria-label="ExamMate home">
+            <span class="brand-mark">e</span>
+            <span>exam<span class="brand-accent">mate</span></span>
+        </a>
+        <p class="topbar-note"><span class="live-dot"></span> Your personal study space</p>
+        <a class="topbar-link" href="#planner">Plan a study session <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <nav class="navigation" aria-label="Main navigation">
+        <a class="active" href="#overview">Overview</a>
+        <a href="#planner">Study planner</a>
+        <a href="#tasks">Daily tasks</a>
+        <a href="#analytics">Analytics</a>
+    </nav>
+
+    <main class="container" id="overview">
+        <section class="welcome-card">
+            <div class="welcome-copy">
+                <span class="eyebrow"><span class="sparkle">✦</span> A LITTLE PROGRESS, EVERY DAY</span>
+                <h1>Make today<br>count<span class="heading-period">.</span></h1>
+                <p>Your next big achievement starts with one focused study session.</p>
+                <a class="primary-link" href="#tasks">View today’s tasks <span aria-hidden="true">→</span></a>
+            </div>
+            <div class="welcome-art" aria-hidden="true">
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+                <div class="book-stack">
+                    <span class="book book-back"></span>
+                    <span class="book book-middle"></span>
+                    <span class="book book-front"><i></i><i></i><i></i></span>
+                </div>
+                <span class="art-star star-one">✦</span>
+                <span class="art-star star-two">✳</span>
+            </div>
+            <div class="goal-summary">
+                <div class="goal-circle"><strong id="goalPercent">0%</strong></div>
+                <span>DAILY GOAL</span>
+                <small>Keep your momentum</small>
+            </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Today's study summary">
+            <article class="stat-card stat-primary">
+                <span class="stat-icon">✓</span>
+                <span class="stat-label">Completed</span>
+                <strong id="completedCount">0</strong>
+                <small>tasks finished today</small>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon icon-lilac">↗</span>
+                <span class="stat-label">Still to do</span>
+                <strong id="pendingCount">0</strong>
+                <small>tasks on your list</small>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon icon-blue">◷</span>
+                <span class="stat-label">Study time</span>
+                <strong id="studyTime">0 min</strong>
+                <small>focused time today</small>
+            </article>
+            <article class="stat-card">
+                <span class="stat-icon icon-peach">◎</span>
+                <span class="stat-label">Completion</span>
+                <strong id="completionRate">0%</strong>
+                <small>of today’s tasks</small>
+            </article>
+        </section>
+
+        <section class="card planner-card" id="planner">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">MAKE A PLAN</span>
+                    <h2>Your study planner</h2>
+                </div>
+                <span class="heading-icon">✎</span>
+            </div>
+            <p class="section-description">Build a separate study plan for each subject and keep every exam date on your dashboard.</p>
+
+            <div class="form-grid">
+                <div class="field field-wide">
+                    <label for="subjectName">Subject name</label>
+                    <input id="subjectName" type="text" placeholder="e.g. Biology">
+                </div>
+                <div class="field">
+                    <label for="topics">Pending topics</label>
+                    <input id="topics" type="number" min="1" value="5">
+                </div>
+                <div class="field">
+                    <label for="hours">Study hours today</label>
+                    <input id="hours" type="number" min="0.5" max="16" step="0.5" value="3">
+                </div>
+                
+                <div class="field field-wide">
+                    <label for="plannerDate">Exam date</label>
+                    <input id="plannerDate" type="date">
+                </div>
+            </div>
+            <button py-click="generate_plan" class="button-primary">Build my timetable <span aria-hidden="true">→</span></button>
+            <div id="planResult" class="plan-result" aria-live="polite"></div>
+        </section>
+
+        <section class="card countdown-card">
+            <span class="eyebrow">YOUR NEXT MILESTONE</span>
+            <h2>Subject exam countdowns</h2>
+            <div id="subjectCountdownList" class="subject-countdown-list" aria-live="polite"></div>
+        </section>
+
+        <section class="card tasks-card" id="tasks">
+            <div class="section-heading">
+                <div>
+                    <span class="eyebrow">ONE THING AT A TIME</span>
+                    <h2>Today’s tasks</h2>
+                </div>
+                <span class="task-date" id="taskDateLabel">YOUR CHECKLIST</span>
+            </div>
+            <div class="task-form">
+                <div class="field task-name-field">
+                    <label for="taskName">What do you want to study?</label>
+                    <input id="taskName" type="text" placeholder="e.g. Revise chapter 3">
+                </div>
+                <div class="field task-outcome-field">
+                    <label for="taskOutcome">Learning outcome (optional)</label>
+                    <input id="taskOutcome" type="text" placeholder="I can explain…">
+                </div>
+                <div class="field minutes-field">
+                    <label for="taskMinutes">Minutes</label>
+                    <input id="taskMinutes" type="number" min="5" value="30">
+                </div>
+                <button py-click="add_task" class="button-primary add-task-button">+ Add task</button>
+            </div>
+            <p id="taskMessage" class="feedback-message" aria-live="polite"></p>
+            <div id="taskList" class="task-list"></div>
+        </section>
+
+        <section class="card analytics-card" id="analytics">
+            <div class="section-heading analytics-heading">
+                <div>
+                    <span class="eyebrow">THE BIG PICTURE</span>
+                    <h2>Your progress</h2>
+                </div>
+                <span class="analytics-badge">Updated as you study</span>
+            </div>
+            <div class="progress-summary">
+                <div>
+                    <strong id="analyticsMessage">Add your first task to start tracking progress.</strong>
+                    <span>Daily task completion</span>
+                </div>
+                <div class="progress-track"><progress id="progressBar" value="0" max="100"></progress></div>
+            </div>
+            <div class="outcome-summary">
+                <div class="outcome-summary-copy">
+                    <span class="outcome-icon">✦</span>
+                    <div>
+                        <strong>Student learning outcomes</strong>
+                        <p id="outcomeMessage">Add an outcome to a task or study plan to track what you can do.</p>
+                    </div>
+                </div>
+                <div class="outcome-progress">
+                    <strong id="outcomeCount">0 / 0</strong>
+                    <span>achieved</span>
+                </div>
+                <progress id="outcomeProgress" value="0" max="100"></progress>
+                <div id="outcomeList" class="outcome-list"></div>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-panel">
+                    <div class="chart-title">
+                        <div>
+                            <h3>Weekly study activity</h3>
+                            <p>Completed vs planned minutes · last 7 days</p>
+                        </div>
+                        <span class="chart-key"><i></i> Done <i class="planned-key"></i> Planned</span>
+                    </div>
+                    <div id="weeklyChartMessage" class="chart-empty chart-hint">Add study tasks to build your weekly graph.</div>
+                    <div id="weeklyChart" class="weekly-chart" role="img" aria-label="Weekly study activity chart"></div>
+                </div>
+                <div class="chart-panel subject-panel">
+                    <div class="chart-title">
+                        <div>
+                            <h3>Time by subject</h3>
+                            <p>Completed vs planned minutes today</p>
+                        </div>
+                    </div>
+                    <div id="studyGraph" class="subject-chart"></div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <span class="footer-brand">exam<span>mate</span></span>
+            <p>Small steps add up to big things.</p>
+            <a href="#overview">Back to top ↑</a>
+        </footer>
+    </main>
+</body>
+</html>
